@@ -17,8 +17,8 @@ func (s *Service) GetCakeList(params config.M) (*config.M, int, error) {
 	if page < 1 {
 		page = 1
 	}
-	if count < 1 || count > config.CONFIG_MAX_PAGINATION_COUNT {
-		count = config.CONFIG_MAX_PAGINATION_COUNT
+	if count < 1 || count > config.MAX_PAGINATION_COUNT {
+		count = config.MAX_PAGINATION_COUNT
 	}
 
 	params = config.M{
