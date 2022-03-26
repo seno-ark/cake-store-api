@@ -18,33 +18,33 @@ var (
 	service = Service{Repo: repo}
 )
 
-func TestGetCake(t *testing.T) {
+func TestGetCakeService(t *testing.T) {
 
 	testCases := []struct {
 		name    string
 		arg     int
+		mockErr error
 		result  *model.CakeModel
 		status  int
 		err     error
-		mockErr error
 	}{
 		{
-			name: "GetCake Success",
-			arg:  2,
+			name:    "GetCake Success",
+			arg:     2,
+			mockErr: nil,
 			result: &model.CakeModel{
 				ID: 2,
 			},
-			status:  http.StatusOK,
-			err:     nil,
-			mockErr: nil,
+			status: http.StatusOK,
+			err:    nil,
 		},
 		{
 			name:    "GetCake NotFound",
 			arg:     0,
+			mockErr: sql.ErrNoRows,
 			result:  nil,
 			status:  http.StatusNotFound,
 			err:     errors.New(config.MSG_ERROR_CAKE_NOT_FOUND),
-			mockErr: sql.ErrNoRows,
 		},
 	}
 
