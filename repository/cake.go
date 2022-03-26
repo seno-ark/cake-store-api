@@ -10,11 +10,8 @@ func (r *Repo) CountCake() (int, error) {
 	var cakeCount int
 
 	err := r.DB.Get(&cakeCount, "SELECT COUNT(id) FROM cakes")
-	if err != nil {
-		return cakeCount, err
-	}
 
-	return cakeCount, nil
+	return cakeCount, err
 }
 
 func (r *Repo) GetCakeList(params config.M) ([]*model.CakeModel, error) {
@@ -29,11 +26,8 @@ func (r *Repo) GetCakeList(params config.M) ([]*model.CakeModel, error) {
 	query := "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes ORDER BY updated_at DESC LIMIT ?, ?"
 
 	err := r.DB.Select(&cakes, query, args...)
-	if err != nil {
-		return cakes, err
-	}
 
-	return cakes, nil
+	return cakes, err
 }
 
 func (r *Repo) GetCake(cakeID int) (*model.CakeModel, error) {
@@ -43,11 +37,8 @@ func (r *Repo) GetCake(cakeID int) (*model.CakeModel, error) {
 	query := "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes WHERE id = ?"
 
 	err := r.DB.Get(cake, query, cakeID)
-	if err != nil {
-		return cake, err
-	}
 
-	return cake, nil
+	return cake, err
 }
 
 func (r *Repo) CreateCake(cakeForm *model.CakeForm) (int, error) {
@@ -97,9 +88,6 @@ func (r *Repo) UpdateCake(cakeID int, cakeForm *model.CakeForm) (int, error) {
 func (r *Repo) DeleteCake(cakeID int) error {
 
 	_, err := r.DB.Exec("DELETE FROM cakes WHERE id = ?", cakeID)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
