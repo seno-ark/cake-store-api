@@ -13,8 +13,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var repo = &repository.RepositoryMock{Mock: mock.Mock{}}
-var service = Service{repository: repo}
+var (
+	repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+	service = Service{Repo: repo}
+)
 
 func TestGetCake(t *testing.T) {
 

@@ -17,9 +17,9 @@ type Repository interface {
 }
 
 func NewRepository(db *sqlx.DB) Repository {
-	return &Repo{db}
+	return &MySql{db}
 }
 
-type Repo struct {
+type MySql struct {
 	DB *sqlx.DB
 }

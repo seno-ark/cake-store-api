@@ -5,7 +5,7 @@ import (
 )
 
 type Controller struct {
-	service service.Service
+	Svc service.Service
 }
 
 func NewController(s service.Service) Controller {

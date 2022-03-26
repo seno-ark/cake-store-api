@@ -26,7 +26,7 @@ func (s *Service) GetCakeList(params config.M) (*config.M, int, error) {
 		"offset": count,
 	}
 
-	cakes, err := s.repository.GetCakeList(params)
+	cakes, err := s.Repo.GetCakeList(params)
 	if err != nil {
 		log.Println("ERROR GetCakeList: GetCakeList", err.Error())
 		return nil, http.StatusInternalServerError, errors.New(config.MSG_ERROR_DATABASE)
@@ -34,7 +34,7 @@ func (s *Service) GetCakeList(params config.M) (*config.M, int, error) {
 
 	var totalData int
 	if len(cakes) > 0 {
-		totalData, err = s.repository.CountCake()
+		totalData, err = s.Repo.CountCake()
 		if err != nil {
 			log.Println("ERROR GetCakeList: CountCake", err.Error())
 			return nil, http.StatusInternalServerError, errors.New(config.MSG_ERROR_DATABASE)
@@ -53,7 +53,7 @@ func (s *Service) GetCakeList(params config.M) (*config.M, int, error) {
 
 func (s *Service) GetCake(cakeID int) (*model.CakeModel, int, error) {
 
-	cake, err := s.repository.GetCake(cakeID)
+	cake, err := s.Repo.GetCake(cakeID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, http.StatusNotFound, errors.New(config.MSG_ERROR_CAKE_NOT_FOUND)
@@ -67,13 +67,13 @@ func (s *Service) GetCake(cakeID int) (*model.CakeModel, int, error) {
 
 func (s *Service) CreateCake(cakeForm *model.CakeForm) (*model.CakeModel, int, error) {
 
-	cakeID, err := s.repository.CreateCake(cakeForm)
+	cakeID, err := s.Repo.CreateCake(cakeForm)
 	if err != nil {
 		log.Println("ERROR CreateCake: CreateCake", err.Error())
 		return nil, http.StatusInternalServerError, errors.New(config.MSG_ERROR_DATABASE)
 	}
 
-	cakeDetail, err := s.repository.GetCake(cakeID)
+	cakeDetail, err := s.Repo.GetCake(cakeID)
 	if err != nil {
 		log.Println("ERROR CreateCake: GetCake", err.Error())
 		return nil, http.StatusInternalServerError, errors.New(config.MSG_ERROR_DATABASE)
@@ -84,13 +84,13 @@ func (s *Service) CreateCake(cakeForm *model.CakeForm) (*model.CakeModel, int, e
 
 func (s *Service) UpdateCake(cakeID int, cakeForm *model.CakeForm) (*model.CakeModel, int, error) {
 
-	_, err := s.repository.UpdateCake(cakeID, cakeForm)
+	_, err := s.Repo.UpdateCake(cakeID, cakeForm)
 	if err != nil {
 		log.Println("ERROR UpdateCake: UpdateCake", err.Error())
 		return nil, http.StatusInternalServerError, errors.New(config.MSG_ERROR_DATABASE)
 	}
 
-	cakeDetail, err := s.repository.GetCake(cakeID)
+	cakeDetail, err := s.Repo.GetCake(cakeID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, http.StatusNotFound, errors.New(config.MSG_ERROR_CAKE_NOT_FOUND)
@@ -103,7 +103,7 @@ func (s *Service) UpdateCake(cakeID int, cakeForm *model.CakeForm) (*model.CakeM
 }
 
 func (s *Service) DeleteCake(cakeID int) (int, int, error) {
-	err := s.repository.DeleteCake(cakeID)
+	err := s.Repo.DeleteCake(cakeID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return 0, http.StatusNotFound, errors.New(config.MSG_ERROR_CAKE_NOT_FOUND)

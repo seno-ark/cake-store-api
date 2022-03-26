@@ -5,16 +5,16 @@ import (
 	"cake-store-api/model"
 )
 
-func (r *Repo) CountCake() (int, error) {
+func (m *MySql) CountCake() (int, error) {
 
 	var cakeCount int
 
-	err := r.DB.Get(&cakeCount, "SELECT COUNT(id) FROM cakes")
+	err := m.DB.Get(&cakeCount, "SELECT COUNT(id) FROM cakes")
 
 	return cakeCount, err
 }
 
-func (r *Repo) GetCakeList(params config.M) ([]*model.CakeModel, error) {
+func (m *MySql) GetCakeList(params config.M) ([]*model.CakeModel, error) {
 
 	var cakes = []*model.CakeModel{}
 
@@ -25,27 +25,27 @@ func (r *Repo) GetCakeList(params config.M) ([]*model.CakeModel, error) {
 
 	query := "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes ORDER BY updated_at DESC LIMIT ?, ?"
 
-	err := r.DB.Select(&cakes, query, args...)
+	err := m.DB.Select(&cakes, query, args...)
 
 	return cakes, err
 }
 
-func (r *Repo) GetCake(cakeID int) (*model.CakeModel, error) {
+func (m *MySql) GetCake(cakeID int) (*model.CakeModel, error) {
 
 	var cake = &model.CakeModel{}
 
 	query := "SELECT id, title, description, rating, image, created_at, updated_at FROM cakes WHERE id = ?"
 
-	err := r.DB.Get(cake, query, cakeID)
+	err := m.DB.Get(cake, query, cakeID)
 
 	return cake, err
 }
 
-func (r *Repo) CreateCake(cakeForm *model.CakeForm) (int, error) {
+func (m *MySql) CreateCake(cakeForm *model.CakeForm) (int, error) {
 
 	query := "INSERT INTO cakes (title, description, rating, image) VALUES (:title, :description, :rating, :image)"
 
-	res, err := r.DB.NamedExec(query,
+	res, err := m.DB.NamedExec(query,
 		map[string]interface{}{
 			"title":       cakeForm.Title,
 			"description": cakeForm.Description,
@@ -65,11 +65,11 @@ func (r *Repo) CreateCake(cakeForm *model.CakeForm) (int, error) {
 	return int(cakeID), nil
 }
 
-func (r *Repo) UpdateCake(cakeID int, cakeForm *model.CakeForm) (int, error) {
+func (m *MySql) UpdateCake(cakeID int, cakeForm *model.CakeForm) (int, error) {
 
 	query := "UPDATE cakes SET title = :title, description = :description, rating = :rating, image = :image, updated_at = now() WHERE id = :id"
 
-	_, err := r.DB.NamedExec(query,
+	_, err := m.DB.NamedExec(query,
 		map[string]interface{}{
 			"id":          cakeID,
 			"title":       cakeForm.Title,
@@ -85,9 +85,9 @@ func (r *Repo) UpdateCake(cakeID int, cakeForm *model.CakeForm) (int, error) {
 	return cakeID, nil
 }
 
-func (r *Repo) DeleteCake(cakeID int) error {
+func (m *MySql) DeleteCake(cakeID int) error {
 
-	_, err := r.DB.Exec("DELETE FROM cakes WHERE id = ?", cakeID)
+	_, err := m.DB.Exec("DELETE FROM cakes WHERE id = ?", cakeID)
 
 	return err
 }

@@ -39,7 +39,7 @@ func (c *Controller) GetCakeList(ctx echo.Context) error {
 		"count": count,
 	}
 
-	result, status, err := c.service.GetCakeList(params)
+	result, status, err := c.Svc.GetCakeList(params)
 
 	if err != nil {
 		response.Message = err.Error()
@@ -60,7 +60,7 @@ func (c *Controller) GetCake(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, response)
 	}
 
-	result, status, err := c.service.GetCake(cakeID)
+	result, status, err := c.Svc.GetCake(cakeID)
 
 	if err != nil {
 		response.Message = err.Error()
@@ -86,7 +86,7 @@ func (c *Controller) CreateCake(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, response)
 	}
 
-	result, status, err := c.service.CreateCake(cakeForm)
+	result, status, err := c.Svc.CreateCake(cakeForm)
 
 	if err != nil {
 		response.Message = err.Error()
@@ -119,7 +119,7 @@ func (c *Controller) UpdateCake(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, response)
 	}
 
-	result, status, err := c.service.UpdateCake(cakeID, cakeForm)
+	result, status, err := c.Svc.UpdateCake(cakeID, cakeForm)
 
 	if err != nil {
 		response.Message = err.Error()
@@ -140,7 +140,7 @@ func (c *Controller) DeleteCake(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, response)
 	}
 
-	_, status, err := c.service.DeleteCake(cakeID)
+	_, status, err := c.Svc.DeleteCake(cakeID)
 
 	if err != nil {
 		response.Message = err.Error()
