@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+
+  app:
+    container_name: app-container
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 9000:9000
+    networks:
+      - restapi_network
+    depends_on:
+      - db
+
+  db:
+    container_name: mysql-container
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql-root-pass
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DBNAME}
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - restapi_network
+
+volumes:
+  mysql-data:
+
+networks:
+  restapi_network:
