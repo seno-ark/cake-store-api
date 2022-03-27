@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -26,35 +25,61 @@ var (
 
 func TestGetCakeController(t *testing.T) {
 
+	type Arg struct {
+		CakeID string
+	}
+
+	type Result struct {
+		Status  int
+		Message string
+		Body    string
+	}
+
 	testCases := []struct {
-		name       string
-		cakeID     int
-		mockResult *model.CakeModel
-		mockErr    error
-		status     int
-		message    string
+		Name              string
+		Arg               Arg
+		Result            Result
+		RepoGetCakeArg    repository.GetCakeArg
+		RepoGetCakeResult repository.GetCakeResult
 	}{
 		{
-			name:   "GetCake Success",
-			cakeID: 2,
-			mockResult: &model.CakeModel{
-				ID:          2,
-				Title:       "Cake A",
-				Description: "AAA",
-				Rating:      4.8,
-				Image:       "https://gallery.com/asdadfs.jpg",
+			Name: "GetCake Success",
+			Arg: Arg{
+				CakeID: "2",
 			},
-			mockErr: nil,
-			status:  http.StatusOK,
-			message: "",
+			RepoGetCakeArg: repository.GetCakeArg{
+				CakeID: 2,
+			},
+			RepoGetCakeResult: repository.GetCakeResult{
+				Cake: &model.CakeModel{
+					ID:          2,
+					Title:       "Cake A",
+					Description: "AAA",
+					Rating:      4.8,
+					Image:       "https://gallery.com/asdadfs.jpg",
+				},
+				Err: nil,
+			},
+			Result: Result{
+				Status: http.StatusOK,
+			},
 		},
 		{
-			name:       "GetCake Not Found",
-			cakeID:     0,
-			mockResult: nil,
-			mockErr:    sql.ErrNoRows,
-			status:     http.StatusNotFound,
-			message:    "Cake not found",
+			Name: "GetCake Not Found",
+			Arg: Arg{
+				CakeID: "0",
+			},
+			RepoGetCakeArg: repository.GetCakeArg{
+				CakeID: 0,
+			},
+			RepoGetCakeResult: repository.GetCakeResult{
+				Cake: nil,
+				Err:  sql.ErrNoRows,
+			},
+			Result: Result{
+				Status:  http.StatusNotFound,
+				Message: "Cake not found",
+			},
 		},
 	}
 
@@ -62,30 +87,35 @@ func TestGetCakeController(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.Name, func(t *testing.T) {
 
-			repo.Mock.On("GetCake", tc.cakeID).Return(tc.mockResult, tc.mockErr)
+			// Mock Repo
+			repo.Mock.On("GetCake", tc.RepoGetCakeArg.CakeID).Return(tc.RepoGetCakeResult.Cake, tc.RepoGetCakeResult.Err)
 
+			// Generate expected json body
 			expectedResp := new(config.Response)
-			if len(tc.message) > 0 {
-				expectedResp.Message = tc.message
+			if len(tc.Result.Message) > 0 {
+				expectedResp.Message = tc.Result.Message
 			}
-			if tc.mockResult != nil {
-				expectedResp.Data = tc.mockResult
+			if tc.RepoGetCakeResult.Cake != nil {
+				expectedResp.Data = tc.RepoGetCakeResult.Cake
 			}
 			expectedJson, _ := json.Marshal(expectedResp)
 
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/cakes/:cake_id")
-			c.SetParamNames("cake_id")
-			c.SetParamValues(strconv.Itoa(tc.cakeID))
 
+			// Set Query params
+			c.SetParamNames("cake_id")
+			c.SetParamValues(tc.Arg.CakeID)
+
+			// Call Method
 			if assert.NoError(t, controller.GetCake(c)) {
-				assert.Equal(t, tc.status, rec.Code)
+				// Assertion
+				assert.Equal(t, tc.Result.Status, rec.Code)
 				assert.Equal(t, string(expectedJson), strings.TrimSpace(rec.Body.String()))
 			}
 		})
-
 	}
 }

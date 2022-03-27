@@ -20,51 +20,85 @@ var (
 
 func TestGetCakeService(t *testing.T) {
 
+	type Arg struct {
+		CakeID int
+	}
+
+	type Result struct {
+		Cake   *model.CakeModel
+		Status int
+		Err    error
+	}
+
 	testCases := []struct {
-		name    string
-		arg     int
-		mockErr error
-		result  *model.CakeModel
-		status  int
-		err     error
+		Name              string
+		Arg               Arg
+		Result            Result
+		RepoGetCakeArg    repository.GetCakeArg
+		RepoGetCakeResult repository.GetCakeResult
 	}{
 		{
-			name:    "GetCake Success",
-			arg:     2,
-			mockErr: nil,
-			result: &model.CakeModel{
-				ID: 2,
+			Name: "GetCake Success",
+			Arg: Arg{
+				CakeID: 2,
 			},
-			status: http.StatusOK,
-			err:    nil,
+			Result: Result{
+				Cake: &model.CakeModel{
+					ID: 2,
+				},
+				Status: http.StatusOK,
+				Err:    nil,
+			},
+			RepoGetCakeArg: repository.GetCakeArg{
+				CakeID: 2,
+			},
+			RepoGetCakeResult: repository.GetCakeResult{
+				Cake: &model.CakeModel{
+					ID: 2,
+				},
+				Err: nil,
+			},
 		},
 		{
-			name:    "GetCake NotFound",
-			arg:     0,
-			mockErr: sql.ErrNoRows,
-			result:  nil,
-			status:  http.StatusNotFound,
-			err:     errors.New(config.MSG_ERROR_CAKE_NOT_FOUND),
+			Name: "GetCake Not Found",
+			Arg: Arg{
+				CakeID: 0,
+			},
+			Result: Result{
+				Cake:   nil,
+				Status: http.StatusNotFound,
+				Err:    errors.New(config.MSG_ERROR_CAKE_NOT_FOUND),
+			},
+			RepoGetCakeArg: repository.GetCakeArg{
+				CakeID: 0,
+			},
+			RepoGetCakeResult: repository.GetCakeResult{
+				Cake: nil,
+				Err:  sql.ErrNoRows,
+			},
 		},
 	}
 
 	for _, tc := range testCases {
 
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.Name, func(t *testing.T) {
 
-			repo.Mock.On("GetCake", tc.arg).Return(tc.result, tc.mockErr)
+			// Mock Repo
+			repo.Mock.On("GetCake", tc.RepoGetCakeArg.CakeID).Return(tc.RepoGetCakeResult.Cake, tc.RepoGetCakeResult.Err)
 
-			result, status, err := service.GetCake(tc.arg)
+			// Call Method
+			result, status, err := service.GetCake(tc.Arg.CakeID)
 
-			if tc.result != nil {
-				assert.Equal(t, tc.result.ID, result.ID)
+			// Assertion
+			if tc.Result.Cake != nil {
+				assert.Equal(t, tc.Result.Cake.ID, result.ID)
 			} else {
 				assert.Nil(t, result)
 			}
 
-			assert.Equal(t, tc.status, status)
+			assert.Equal(t, tc.Result.Status, status)
 
-			if tc.err != nil {
+			if tc.Result.Err != nil {
 				assert.NotNil(t, err)
 			} else {
 				assert.Nil(t, err)

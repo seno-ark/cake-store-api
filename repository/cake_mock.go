@@ -5,6 +5,14 @@ import (
 	"cake-store-api/model"
 )
 
+// CountCake
+
+type CountCakeArg struct{}
+type CountCakeResult struct {
+	Count int
+	Err   error
+}
+
 func (r *RepositoryMock) CountCake() (count int, err error) {
 
 	args := r.Mock.Called()
@@ -18,6 +26,16 @@ func (r *RepositoryMock) CountCake() (count int, err error) {
 	}
 
 	return
+}
+
+// GetCakeList
+
+type GetCakeListArg struct {
+	Params config.M
+}
+type GetCakeListResult struct {
+	Cakes []*model.CakeModel
+	Err   error
 }
 
 func (r *RepositoryMock) GetCakeList(params config.M) (cakes []*model.CakeModel, err error) {
@@ -35,6 +53,16 @@ func (r *RepositoryMock) GetCakeList(params config.M) (cakes []*model.CakeModel,
 	return
 }
 
+// GetCake
+
+type GetCakeArg struct {
+	CakeID int
+}
+type GetCakeResult struct {
+	Cake *model.CakeModel
+	Err  error
+}
+
 func (r *RepositoryMock) GetCake(cakeID int) (cake *model.CakeModel, err error) {
 
 	args := r.Mock.Called(cakeID)
@@ -48,6 +76,16 @@ func (r *RepositoryMock) GetCake(cakeID int) (cake *model.CakeModel, err error) 
 	}
 
 	return
+}
+
+// CreateCake
+
+type CreateCakeArg struct {
+	CakeForm *model.CakeForm
+}
+type CreateCakeResult struct {
+	CakeID int
+	Err    error
 }
 
 func (r *RepositoryMock) CreateCake(cakeForm *model.CakeForm) (cakeID int, err error) {
@@ -65,6 +103,17 @@ func (r *RepositoryMock) CreateCake(cakeForm *model.CakeForm) (cakeID int, err e
 	return
 }
 
+// UpdateCake
+
+type UpdateCakeArg struct {
+	ID       int
+	CakeForm *model.CakeForm
+}
+type UpdateCakeResult struct {
+	CakeID int
+	Err    error
+}
+
 func (r *RepositoryMock) UpdateCake(id int, cakeForm *model.CakeForm) (cakeID int, err error) {
 
 	args := r.Mock.Called(id, cakeForm)
@@ -78,6 +127,15 @@ func (r *RepositoryMock) UpdateCake(id int, cakeForm *model.CakeForm) (cakeID in
 	}
 
 	return
+}
+
+// DeleteCake
+
+type DeleteCakeArg struct {
+	CakeID int
+}
+type DeleteCakeResult struct {
+	Err error
 }
 
 func (r *RepositoryMock) DeleteCake(cakeID int) (err error) {
