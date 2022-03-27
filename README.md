@@ -63,3 +63,7 @@ Berikut adalah command yang dapat dijalankan dengan perintah `make` <command>:
 
 ## Api Documentation
 Dokumentasi API endpoints dapat dilihat di file: `api-doc.md`
+
+
+## Postman Collection:
+Privy-1.postman_collection.json
