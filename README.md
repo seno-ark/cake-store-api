@@ -17,10 +17,11 @@ Menjalankan test:
 Untuk menjalankan API server & db server di container
 - make docker-up
 
+Untuk menghentikan container bisa menggunakan perintah `make docker-down`
 
 ## .Env
 
-Sebelum menjalankan server API, buat file .env dengan cara meng-copy .env-example.
+Sebelum menjalankan API server, buat file `.env` dengan cara meng-copy .env-example.
 Kemudian sesuaikan isi variabel-variabel yang tersedia.
 
 ```
