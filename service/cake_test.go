@@ -13,12 +13,11 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var (
-	repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
-	service = Service{Repo: repo}
-)
-
 func TestGetCakeListService(t *testing.T) {
+	var (
+		repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+		service = Service{Repo: repo}
+	)
 
 	type Arg struct {
 		Params config.M
@@ -108,6 +107,10 @@ func TestGetCakeListService(t *testing.T) {
 }
 
 func TestGetCakeService(t *testing.T) {
+	var (
+		repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+		service = Service{Repo: repo}
+	)
 
 	type Arg struct {
 		CakeID int
@@ -197,6 +200,10 @@ func TestGetCakeService(t *testing.T) {
 }
 
 func TestCreateCakeService(t *testing.T) {
+	var (
+		repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+		service = Service{Repo: repo}
+	)
 
 	type Arg struct {
 		CakeForm *model.CakeForm
@@ -296,6 +303,10 @@ func TestCreateCakeService(t *testing.T) {
 }
 
 func TestUpdateCakeService(t *testing.T) {
+	var (
+		repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+		service = Service{Repo: repo}
+	)
 
 	type Arg struct {
 		CakeID   int
@@ -398,6 +409,10 @@ func TestUpdateCakeService(t *testing.T) {
 }
 
 func TestDeleteCakeService(t *testing.T) {
+	var (
+		repo    = &repository.RepositoryMock{Mock: mock.Mock{}}
+		service = Service{Repo: repo}
+	)
 
 	type Arg struct {
 		CakeID int
@@ -449,7 +464,6 @@ func TestDeleteCakeService(t *testing.T) {
 			assert.Equal(t, tc.Result.CakeID, cakeID)
 			assert.Equal(t, tc.Result.Status, status)
 			assert.Nil(t, err)
-
 		})
 	}
 }
