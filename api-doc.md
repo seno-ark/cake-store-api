@@ -1,5 +1,7 @@
 # API Documentation
 
+### Postman Collection: [Privy-1.postman_collection.json](Privy-1.postman_collection.json)
+
 # Endpoints
 
 ## Get Cake list
